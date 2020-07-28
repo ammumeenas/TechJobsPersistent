@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using TechJobsPersistent.Data;
 using TechJobsPersistent.Models;
 using TechJobsPersistent.ViewModels;
 
@@ -12,25 +13,56 @@ namespace TechJobsPersistent.Controllers
 {
     public class EmployerController : Controller
     {
+        private JobDbContext context;
+
+        public EmployerController(JobDbContext dbContext)
+        {
+            context = dbContext;
+        }
         // GET: /<controller>/
         public IActionResult Index()
         {
-            return View();
+            List<Employer> Employers = context.Employers.ToList();
+            return View(Employers);
         }
 
         public IActionResult Add()
         {
-            return View();
+            AddEmployerViewModel addEmployerViewModel = new AddEmployerViewModel();
+            return View(addEmployerViewModel);
         }
 
-        public IActionResult ProcessAddEmployerForm()
+        public IActionResult ProcessAddEmployerForm(AddEmployerViewModel addEmployerViewModel)
         {
-            return View();
+            if (ModelState.IsValid)
+            {
+               
+                Employer employer = new Employer
+                {
+                    Name = addEmployerViewModel.Name,
+                    Location = addEmployerViewModel.Location
+                };
+
+                context.Employers.Add(employer);
+                context.SaveChanges();
+                return Redirect("/Employer/Index/");
+
+            }
+            else
+            {
+                return View("Add");
+            }
+            
+            
+
+           
         }
 
-        public IActionResult About(int id)
+        public IActionResult about (int id)
         {
-            return View();
+            Employer findemployer = context.Employers.Single(e => e.Id == id);
+            AddEmployerViewModel addemployerviewmodel = new AddEmployerViewModel(findemployer);
+            return View("about",addemployerviewmodel);
         }
     }
 }

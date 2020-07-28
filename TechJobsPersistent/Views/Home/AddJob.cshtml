@@ -1,12 +1,51 @@
-﻿<h1>Add a Job</h1>
+﻿@model TechJobsPersistent.ViewModels.AddJobViewModel
+<h1>Add a Job</h1>
 
 <form asp-controller="Home" asp-action="ProcessAddJobForm" method="post">
     <div class="form-group">
-        <label>Name</label>
-        <input class="form-control" />
+        <label asp-for="JobName">Name</label>
+        <input asp-for="JobName" class="form-control" />
         <span></span>
     </div>
+    @if (Model.SelectedEmployers != null)
+    {
 
+
+        <label asp-for="EmployerID">Employers</label>
+
+        @Html.DropDownList("EmployerID", Model.SelectedEmployers, "-- Select Employer --", new { @class = "form-group" })
+
+    }
+
+    else
+    {
+        <h1>No Employers</h1>
+    }
+    <div>
+        <a asp-controller="Employer" asp-action="Add">Add Employer</a>
+    </div>
+
+    @if (Model.Skills != null)
+    { 
+
+<div class="form-group">
+
+    @foreach (Skill item in Model.Skills)
+    {
+
+        <input type="checkbox" name="selectedSkills" value="@item.Id" />
+        <label asp-for="@item.Id">@item.Name</label>
+
+    }
+</div>
+    }
+    else{
+
+    <h1>No Skills</h1>
+    }
+    <div>
+        <a asp-controller="Skill" asp-action="Add">Add Skill</a>
+    </div>
     <input type="submit" value="Add Job" />
 </form>
 

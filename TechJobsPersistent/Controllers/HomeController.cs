@@ -32,27 +32,63 @@ namespace TechJobsPersistent.Controllers
         [HttpGet("/Add")]
         public IActionResult AddJob()
         {
-            return View();
+            List<Employer> Employerfromdatabase = context.Employers.ToList();
+            List<Skill> Skillsfromdatabase = context.Skills.ToList();
+            AddJobViewModel addJobViewModel = new AddJobViewModel(Employerfromdatabase,Skillsfromdatabase);
+
+            return View(addJobViewModel);
         }
 
-        public IActionResult ProcessAddJobForm()
+        public IActionResult ProcessAddJobForm(AddJobViewModel addJobViewModel)
         {
-            return View();
+            if (ModelState.IsValid)
+            {
+                Job job = new Job()
+                {
+                    
+                    Name = addJobViewModel.JobName,
+                    EmployerId = addJobViewModel.EmployerID
+                };
+
+                job.JobSkills = new List<JobSkill>();
+                foreach( string item in addJobViewModel.selectedSkills)
+                {
+                    JobSkill jobskill = new JobSkill()
+                    {
+                        SkillId = int.Parse(item),
+                        JobId = job.Id
+
+                    };
+                    job.JobSkills.Add(jobskill);
+                    context.Jobs.Add(job);
+                    context.JobSkills.Add(jobskill);
+                }
+                context.SaveChanges();
+                return Redirect("/");
+            }
+            else { 
+            return View("AddJob", addJobViewModel);
+            }
         }
 
-        public IActionResult Detail(int id)
-        {
-            Job theJob = context.Jobs
-                .Include(j => j.Employer)
-                .Single(j => j.Id == id);
+            public IActionResult Detail(int id)
+            {
+                Job theJob = context.Jobs
+                    .Include(j => j.Employer)
+                    .Single(j => j.Id == id);
 
-            List<JobSkill> jobSkills = context.JobSkills
-                .Where(js => js.JobId == id)
-                .Include(js => js.Skill)
-                .ToList();
+                List<JobSkill> jobSkills = context.JobSkills
+                    .Where(js => js.JobId == id)
+                    .Include(js => js.Skill)
+                    .ToList();
 
-            JobDetailViewModel viewModel = new JobDetailViewModel(theJob, jobSkills);
-            return View(viewModel);
-        }
-    }
-}
+                JobDetailViewModel viewModel = new JobDetailViewModel(theJob, jobSkills);
+                return View(viewModel);
+            }
+        
+}    }
+
+
+
+
+

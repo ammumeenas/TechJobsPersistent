@@ -1,6 +1,8 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using TechJobsPersistent.Models;
-using System.Collections.Generic;
+
+using System;
+
 
 namespace TechJobsPersistent.ViewModels
 {
