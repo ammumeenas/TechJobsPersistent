@@ -7,17 +7,21 @@
         <input asp-for="JobName" class="form-control" />
         <span></span>
     </div>
+
     @if (Model.SelectedEmployers != null)
     {
+<div class="form-group">
 
 
-        <label asp-for="EmployerID">Employers</label>
+    <label asp-for="EmployerID">Employers</label>
 
-        @Html.DropDownList("EmployerID", Model.SelectedEmployers, "-- Select Employer --", new { @class = "form-group" })
+    @Html.DropDownList("EmployerID", Model.SelectedEmployers, "-- Select Employer --", new { @class = "form-group" })
+</div>
 
-    }
+     }
+      
 
-    else
+else
     {
         <h1>No Employers</h1>
     }
@@ -26,22 +30,23 @@
     </div>
 
     @if (Model.Skills != null)
-    { 
-
-<div class="form-group">
-
-    @foreach (Skill item in Model.Skills)
     {
 
-        <input type="checkbox" name="selectedSkills" value="@item.Id" />
-        <label asp-for="@item.Id">@item.Name</label>
+        <div class="form-group">
 
-    }
-</div>
-    }
-    else{
+            @foreach (Skill item in Model.Skills)
+            {
 
-    <h1>No Skills</h1>
+                <input type="checkbox" name="selectedSkills" value="@item.Id" />
+                <label asp-for="@item.Id">@item.Name</label>
+
+            }
+        </div>
+    }
+    else
+    {
+
+        <h1>No Skills</h1>
     }
     <div>
         <a asp-controller="Skill" asp-action="Add">Add Skill</a>
